@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const UserSchema = new mongoose.Schema(
 	{
@@ -44,6 +45,23 @@ const UserSchema = new mongoose.Schema(
 		minimize: true,
 	}
 );
+
+UserSchema.pre("save", async function (next) {
+	// checking the password is not modified
+	if (!this.isModified("password")) {
+		return next();
+	}
+
+	// Generating salt
+	const salt = await bcrypt.genSalt(10);
+
+	// Hashing the password with the salt
+	const hashedPassword = await bcrypt.hash(this.password, salt);
+	this.password = hashedPassword;
+
+	// Calling the next middleware
+	next();
+});
 
 const User = mongoose.model("User", UserSchema);
 export default User;
