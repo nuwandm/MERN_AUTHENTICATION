@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import User from "../../models/auth/userModel.js";
 import generateToken from "../../helpers/generateToken.js";
 import bcrypt from "bcrypt";
+
 export const registerUser = asyncHandler(async (req, res) => {
 	const { name, email, password } = req.body;
 
@@ -72,6 +73,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
 	// check password matching with hashed password in the database
 	const isMatch = await bcrypt.compare(password, userExists.password);
+
 	if (!isMatch) {
 		return res.status(400).json({
 			message: "invalid credentials",
@@ -104,4 +106,11 @@ export const loginUser = asyncHandler(async (req, res) => {
 	} else {
 		return res.status(400).json({ message: "invalid user data" });
 	}
+});
+
+export const logOutUser = asyncHandler(async (req, res) => {
+	res.clearCookie("token");
+	rea.status(200).json({
+		message: "User Logged Out",
+	});
 });
