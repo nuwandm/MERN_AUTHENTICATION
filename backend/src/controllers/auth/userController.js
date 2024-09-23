@@ -114,3 +114,13 @@ export const logOutUser = asyncHandler(async (req, res) => {
 		message: "User Logged Out",
 	});
 });
+
+export const getUser = asyncHandler(async (req, res) => {
+	if (req.user) {
+		return res.status(200).json(req.user);
+	} else {
+		return req.status(404).json({
+			message: "user not found",
+		});
+	}
+});
